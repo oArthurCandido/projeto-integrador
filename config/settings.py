@@ -77,7 +77,17 @@ WSGI_APPLICATION = 'config.wsgi.app'
 # environments like Vercel. You can use a database over HTTP, hosted elsewhere.
 
 DATABASES = {
-    
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres', # Nome do seu banco de dados no Supabase
+        'USER': 'postgres.zdaqmultnphzwmrtfsep', # Seu usuário do banco de dados no Supabase
+        'PASSWORD': 'Univesp@2024', # Sua senha do banco de dados no Supabase
+        'HOST': 'aws-0-sa-east-1.pooler.supabase.com', # URL do seu banco de dados no Supabase
+        'PORT': '5432', # Porta padrão do PostgreSQL
+        'OPTIONS': {
+            'sslmode': 'require',
+        }
+    }
 }
 
 
