@@ -10,17 +10,22 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=cldztbc4jg&xl0!x673!*v2_=p$$eu)=7*f#d0#zs$44xx-h^'
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -76,20 +81,17 @@ WSGI_APPLICATION = 'config.wsgi.app'
 # Note: Django modules for using databases are not support in serverless
 # environments like Vercel. You can use a database over HTTP, hosted elsewhere.
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres', # Nome do seu banco de dados no Supabase
-        'USER': 'postgres.zdaqmultnphzwmrtfsep', # Seu usuário do banco de dados no Supabase
-        'PASSWORD': 'Univesp@2024', # Sua senha do banco de dados no Supabase
-        'HOST': 'aws-0-sa-east-1.pooler.supabase.com', # URL do seu banco de dados no Supabase
-        'PORT': '5432', # Porta padrão do PostgreSQL
-        'OPTIONS': {
-            'sslmode': 'require',
-        }
-    }
-}
+        'ENGINE': str(os.getenv('ENGINE')),
+        'NAME':  str(os.getenv('NAME')),
+        'USER': str(os.getenv('USER')),
+        'PASSWORD': str(os.getenv('PASSWORD')),
+        'HOST': str(os.getenv('HOST'))
 
+    }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
