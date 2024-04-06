@@ -1,6 +1,9 @@
-from django.urls import path
-from myapp import views
+from django.contrib import admin
+from django.urls import path, include
 
 urlpatterns = [
-    path('turmas/', views.turmas, name='turmas')
+    path('admin/', admin.site.urls),
+    path('', include("myapp.urls"))
 ]
+
+
