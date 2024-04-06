@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+    <div class="container">
+        <h1>Turmas</h1>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Período</th>
+                <th>Sala</th>
+            </tr>
+
+            {% for turma in turmas %}
+            <tr>
+                <td>{{ turma.id }}</td>
+                <td>{{ turma.nome }}</td>
+                <td>{{ turma.periodo }}</td>
+                <td>{{ turma.num_sala }}</td>
+            </tr>
+            
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
