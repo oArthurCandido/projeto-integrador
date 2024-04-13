@@ -15,12 +15,10 @@
             <tr>
                 <td>{{ turma.id }}</td>
                 <td>{{ turma.nome }}</td>
-                <td>{{ turma.idade }}</td>
-                <td>
-                    <a href="{% url 'editar_turma' turma.id %}">Editar</a>
-                    <a href="{% url 'excluir_turma' turma.id %}">Excluir</a>
-                </td>
+                <td>{{ turma.periodo }}</td>
+                <td>{{ turma.num_sala }}</td>
             </tr>
+            
             {% endfor %}
         </table>
     </div>

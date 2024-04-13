@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect
-from .models.turma import Turma
+from myapp.models.export_models import Turma
 
 def home(request):
-    return render(request, 'turmas/home.html')
+    return render(request, 'home/home.html')
+
+def turmas_home(request):
+    items = Turma.objects.all()
+    return render(request, 'turmas/home.html', {"turmas": items})
 
 def turmas(request):
     if request.method == 'POST':
