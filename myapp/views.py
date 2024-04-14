@@ -73,9 +73,11 @@ ORDER BY
             cursor.execute(raw_query)
             results = cursor.fetchall()
     grade_list = list(results)
+    turma = turma_ano+"°"+turma_nome
+    print(turma)
 
     # Render the template with the schedule data
-    return render(request, 'grade/index.html', {"grade": grade_list})
+    return render(request, 'grade/index.html', {"grade": grade_list,"turma": turma})
   
   
 
