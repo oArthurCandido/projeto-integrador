@@ -1,5 +1,5 @@
 from django.contrib import admin
-from myapp.models.export_models import Aluno, Disciplina, Endereco,Grade, Parentesco, Periodo, Professor, Responsavel, Turma
+from myapp.models.export_models import Aluno, Disciplina, Endereco,Grade, Parentesco, Hora_aula, Professor, Responsavel, Turma
 
 
 # Register your models here.
@@ -8,7 +8,7 @@ admin.site.register(Disciplina)
 admin.site.register(Endereco) 
 admin.site.register(Grade) 
 admin.site.register(Parentesco) 
-admin.site.register(Periodo)
+admin.site.register(Hora_aula)
 admin.site.register(Professor)
 admin.site.register(Responsavel)
 admin.site.register(Turma)
