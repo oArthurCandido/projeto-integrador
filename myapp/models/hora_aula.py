@@ -1,6 +1,6 @@
 from django.db import models
 
-class Periodo(models.Model):
+class Hora_aula(models.Model):
     id = models.AutoField(primary_key=True)
     dia_semana = models.TextField(max_length=50)
     horario_inicial = models.TimeField()
