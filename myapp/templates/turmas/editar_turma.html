@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="conteiner">
+            <h1>Editar Turma</h1>
+            Nome: <input name="nome" class="form-control-sm" type="text" value="{{ turma.nome }}">
+            Ano: <input name="ano" class="form-control-sm" type="text" value="{{ turma.ano }}">
+            <button class="form-control-sm">Salvar</button>
+        </div>
+    </form>
+{% endblock %}
