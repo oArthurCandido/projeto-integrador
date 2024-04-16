@@ -3,20 +3,24 @@
 {% block conteudo %}
     <div class="container">
         <h1>Turmas</h1>
+        <a class="btn btn-success" href="/turmas/nova_turma">Nova turma</a>
         <table class="table table-bordered table-striped">
             <tr>
                 <th>ID</th>
+                <th>Ano</th>
                 <th>Nome</th>
-                <th>Período</th>
-                <th>Sala</th>
+                <th>Opções</th>
             </tr>
 
             {% for turma in turmas %}
             <tr>
                 <td>{{ turma.id }}</td>
-                <td>{{ turma.nome }}</td>
                 <td>{{ turma.ano }}</td>
-                <td>{{ turma.num_sala }}</td>
+                <td>{{ turma.nome }}</td>
+                <td>
+                    <a href="{% url 'editar_turma' turma.id %}" class="btn btn-primary btn-sm">Editar</a>
+                    <a href="{% url 'excluir_turma' turma.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                </td>
             </tr>
             
             {% endfor %}

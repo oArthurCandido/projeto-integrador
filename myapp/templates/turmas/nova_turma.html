@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="container">
+            <h1>Cadastro de Turma</h1>
+            Nome <input name="nome" class="form-control-sm"type="text">
+            Ano <input name="ano" class="form-control-sm" type="text">
+            <button class="form-control-sm">Enviar</button>
+        </div>
+    </form>
+{% endblock %}
