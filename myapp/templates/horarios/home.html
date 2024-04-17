@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+    <div class="container">
+        <h1>Horários</h1>
+        <a class="btn btn-success my-2" href="/horarios/novo_horario">Novo horário</a>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>ID</th>
+                <th>Dia da semana</th>
+                <th>Hora inicial</th>
+                <th>Hora final</th>
+                <th>Opções</th>
+            </tr>
+
+            {% for horario in horarios %}
+            <tr>
+                <td>{{ horario.id }}</td>
+                <td>{{ horario.dia_semana }}</td>
+                <td>{{ horario.horario_inicial }}</td>
+                <td>{{ horario.horario_final }}</td>
+               
+                <td>
+                    <a href="{% url 'editar_horario' horario.id %}" class="btn btn-primary btn-sm">Editar</a>
+                    <a href="{% url 'excluir_horario' horario.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                </td> 
+            </tr>
+            
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

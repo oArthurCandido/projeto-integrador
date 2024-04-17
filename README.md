@@ -1,106 +1,38 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fexamples%2Ftree%2Fmain%2Fpython%2Fdjango&demo-title=Django%20%2B%20Vercel&demo-description=Use%20Django%204%20on%20Vercel%20with%20Serverless%20Functions%20using%20the%20Python%20Runtime.&demo-url=https%3A%2F%2Fdjango-template.vercel.app%2F&demo-image=https://assets.vercel.com/image/upload/v1669994241/random/django.png)
+# LembrEscola
 
-# Django + Vercel
+LembrEscola é um software desenvolvido como parte do Projeto Integrador do 4º semestre do curso de Bacharelado em Tecnologia da Informação da Universidade Virtual do Estado de São Paulo (UNIVESP).
 
-This example shows how to use Django 4 on Vercel with Serverless Functions using the [Python Runtime](https://vercel.com/docs/concepts/functions/serverless-functions/runtimes/python).
+## Descrição
 
-## Demo
+LembrEscola é um software para gerenciamento de horários e lembretes escolares, visando facilitar a comunicação entre a escola e os responsáveis pelos estudantes. Ele permite o acesso fácil e direto aos horários escolares e lembretes relacionados, fortalecendo as relações dentro do ambiente escolar e contribuindo para uma educação mais democrática.
 
-https://django-template.vercel.app/
+## Instalação
 
-## How it Works
+1. Clone o repositório: git clonehttps://github.com/oArthurCandido/projeto-integrador.git
 
-Our Django application, `example` is configured as an installed application in `root/settings.py`:
+2. Instale as dependências:
 
-```python
-# root/settings.py
-INSTALLED_APPS = [
-    # ...
-    'example',
-]
-```
+pip install -r requirements.txt
 
-We allow "\*.vercel.app" subdomains in `ALLOWED_HOSTS`, in addition to 127.0.0.1:
+3. Configure as variáveis de ambiente no arquivo `.env`. veja o arquivo `.env.example` para saber quais variáveis são necessárias.
 
-```python
-# root/settings.py
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
-```
+4. Execute as migrações do banco de dados:
 
-The `wsgi` module must use a public variable named `app` to expose the WSGI application:
+python manage.py migrate
 
-```python
-# root/wsgi.py
-app = get_wsgi_application()
-```
+5. Inicie o servidor:
 
-The corresponding `WSGI_APPLICATION` setting is configured to use the `app` variable from the `root.wsgi` module:
-
-```python
-# root/settings.py
-WSGI_APPLICATION = 'root.wsgi.app'
-```
-
-There is a single view which renders the current time in `example/views.py`:
-
-```python
-# example/views.py
-from datetime import datetime
-
-from django.http import HttpResponse
-
-
-def index(request):
-    now = datetime.now()
-    html = f'''
-    <html>
-        <body>
-            <h1>Hello from Vercel!</h1>
-            <p>The current time is { now }.</p>
-        </body>
-    </html>
-    '''
-    return HttpResponse(html)
-```
-
-This view is exposed a URL through `example/urls.py`:
-
-```python
-# example/urls.py
-from django.urls import path
-
-from example.views import index
-
-
-urlpatterns = [
-    path('', index),
-]
-```
-
-Finally, it's made accessible to the Django server inside `root/urls.py`:
-
-```python
-# root/urls.py
-from django.urls import path, include
-
-urlpatterns = [
-    ...
-    path('', include('example.urls')),
-]
-```
-
-This example uses the Web Server Gateway Interface (WSGI) with Django to enable handling requests on Vercel with Serverless Functions.
-
-## Running Locally
-
-```bash
 python manage.py runserver
-```
 
-Your Django application is now available at `http://localhost:8000`.
+## Como contribuir
 
-## One-Click Deploy
+1. Fork o repositório
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=vercel-examples):
+2. Crie uma branch para a sua feature (`git checkout -b feat/MinhaFeature`)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fexamples%2Ftree%2Fmain%2Fpython%2Fdjango&demo-title=Django%20%2B%20Vercel&demo-description=Use%20Django%204%20on%20Vercel%20with%20Serverless%20Functions%20using%20the%20Python%20Runtime.&demo-url=https%3A%2F%2Fdjango-template.vercel.app%2F&demo-image=https://assets.vercel.com/image/upload/v1669994241/random/django.png)
+3. Faça commit das suas mudanças (`git commit -m 'Adiciona nova feature'`)
+
+4. Faça push para a branch (`git push origin feat/MinhaFeature`)
+
+5. Crie um novo Pull Request
+
