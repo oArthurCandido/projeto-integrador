@@ -108,3 +108,39 @@ def excluir_turma(request, id):
     turma = Turma.objects.get(pk=id)
     turma.delete()
     return redirect('turmas')
+
+def horarios(request):
+    items = Hora_aula.objects.all()
+    return render(request, 'horarios/home.html', {"horarios": items})
+
+def novo_horario(request):
+    if request.method == 'POST':
+        # salvar os dados da tela para o banco
+        novo_horario = Hora_aula()
+        novo_horario.dia_semana = request.POST.get('dia_semana')
+        novo_horario.horario_inicial = request.POST.get('horario_inicial')
+        novo_horario.horario_final = request.POST.get('horario_final')
+        novo_horario.save()
+
+        # return redirect('horarios')
+    
+    return render(request, 'horarios/novo_horario.html')
+
+def editar_horario(request, id):
+    horario = Hora_aula.objects.get(pk=id)
+    print(horario.horario_final)
+
+    if request.method == 'POST':
+        horario.dia_semana = request.POST.get('dia_semana')
+        horario.horario_inicial = request.POST.get('horario_inicial')
+        horario.horario_final = request.POST.get('horario_final')
+        horario.save()
+
+        return redirect('horarios')
+    
+    return render(request, 'horarios/editar_horario.html', {'horario': horario})
+
+def excluir_horario(request, id):
+    horario = Hora_aula.objects.get(pk=id)
+    horario.delete()
+    return redirect('horarios')
