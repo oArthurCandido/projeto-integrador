@@ -3,12 +3,12 @@
 {% block conteudo %}
     <form method="post">
         {% csrf_token %}
-        <div class="conteiner">
-            <h1>Editar Horário</h1>
+        <div class="conteiner mt-5"">
+            <h1><p class="text-center">Editar Horário</p></h1>
             <h3 class="text-black-50 text-sm-start ">
                 {{ horario.dia_semana}} - {{horario.horario_inicial}} - {{horario.horario_final}}
             </h3>
-            <div class="row g-3">
+            <div class="row g-3 mt-3">
 
                 <div class="col-md-12">
                     <label for="dia_semana" class="form-label text-lg-start">

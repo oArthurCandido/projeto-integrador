@@ -5,6 +5,7 @@ from myapp.models.export_models import Turma, Grade, Hora_aula
 from django.db.models import F, Value as V, CharField, Case, When, Max, Q
 from django.db.models.functions import Concat, Coalesce
 from django.http import JsonResponse
+#from django.forms import AvisoForm
 
 def home(request):
     return render(request, 'home/home.html')
@@ -144,3 +145,16 @@ def excluir_horario(request, id):
     horario = Hora_aula.objects.get(pk=id)
     horario.delete()
     return redirect('horarios')
+  
+def avisos(request):
+   return render(request, 'avisos/avisos.html')
+ 
+ 
+ #def enviar_notificacao(request):
+  #  if request.method == 'POST':
+   #     form = NotificacaoForm(request.POST)
+    #    if form.is_valid():
+     #       form.save()                # para salvar a notificação enviada no bd
+      #      messages.success(request, 'Sua notificação foi enviada')
+       #     return render(request, 'avisos/avisos.html', {'form': form})
+  
