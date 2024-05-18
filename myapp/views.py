@@ -1,7 +1,7 @@
 from django.db import connection
 from django.views.generic import ListView
 from django.shortcuts import render, redirect
-from myapp.models.export_models import Turma, Grade, Hora_aula
+from myapp.models.export_models import Turma, Grade, Hora_aula, Disciplina
 from django.db.models import F, Value as V, CharField, Case, When, Max, Q
 from django.db.models.functions import Concat, Coalesce
 from django.http import JsonResponse
@@ -158,3 +158,32 @@ def avisos(request):
       #      messages.success(request, 'Sua notificação foi enviada')
        #     return render(request, 'avisos/avisos.html', {'form': form})
   
+def disciplina(request):
+    items = Disciplina.objects.all().order_by('id')
+    return render(request, 'disciplina/disciplina.html', {"disciplina": items})
+  
+def nova_disciplina(request):
+    if request.method == 'POST':
+        nova_disciplina = Disciplina()
+        nova_disciplina.disciplina = request.POST.get('disciplina')
+        nova_disciplina.save()
+
+        return redirect('disciplina')
+    
+    return render(request, 'disciplina/nova_disciplina.html')
+
+def editar_disciplina(request, id):
+    disciplina = Disciplina.objects.get(pk=id)
+
+    if request.method == 'POST':
+        disciplina.disciplina = request.POST.get('disciplina')
+        disciplina.save()
+
+        return redirect('disciplina')
+    
+    return render(request, 'disciplina/editar_disciplina.html', {'disciplina': disciplina})
+
+def excluir_disciplina(request, id):
+    disciplina = Disciplina.objects.get(pk=id)
+    disciplina.delete()
+    return redirect('disciplina')
