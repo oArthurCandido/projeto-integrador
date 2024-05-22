@@ -3,6 +3,9 @@ from .import views
 
 
 urlpatterns = [
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('register/', views.register, name='register'),
     path("", views.home, name="home" ),
     path("turmas/", views.turmas, name="turmas" ),
     path("turmas/nova_turma", views.nova_turma, name="nova_turma" ),
@@ -18,4 +21,5 @@ urlpatterns = [
     path('horarios/editar_horario/<int:id>/', views.editar_horario, name='editar_horario'),
     path('excluir_horario/<int:id>/', views.excluir_horario, name='excluir_horario'),
     path("grade/<slug:slug>", views.turmas_grade, name= "grade" ),
+    path("grade/<int:ano>-<str:nome>/", views.turmas_grade, name="grade"),
 ]
