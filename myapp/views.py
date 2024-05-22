@@ -5,7 +5,45 @@ from myapp.models.export_models import Turma, Grade, Hora_aula, Disciplina
 from django.db.models import F, Value as V, CharField, Case, When, Max, Q
 from django.db.models.functions import Concat, Coalesce
 from django.http import JsonResponse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from .forms import CustomUserCreationForm
+from django.contrib.auth.decorators import login_required
 #from django.forms import AvisoForm
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Usuário ou senha incorretos.')
+    return render(request, 'login/login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+  
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Cadastro realizado com sucesso.')
+            return redirect('home')
+        else:
+            messages.error(request, 'Por favor, corrija os erros abaixo.')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'login/register.html', {'form': form})
+
+#def home(request):
+#    user_profile = get_object_or_404(UserProfile, user=request.user)
+#    turmas_do_usuario = user_profile.turmas.all()
 
 def home(request):
     return render(request, 'home/home.html')
@@ -15,11 +53,14 @@ def turmas(request):
     return render(request, 'turmas/home.html', {"turmas": items})
 
 def turmas_grade(request, slug):
-    splited_slug = slug.split('-')
-    turma_ano = splited_slug[0]
-    turma_nome = splited_slug[1]
+    user_profile = get_object_or_404(UserProfile, user=request.user)
+    turma = get_object_or_404(Turma, slug=slug)
+    if turma in user_profile.turmas.all():
+      splited_slug = slug.split('-')
+      turma_ano = splited_slug[0]
+      turma_nome = splited_slug[1]
 
-    raw_query = f"""
+      raw_query = f"""
            SELECT
   CONCAT(
     TO_CHAR(x4.horario_inicial, 'HH24:MI'),
@@ -73,13 +114,15 @@ ORDER BY
     with connection.cursor() as cursor:
             cursor.execute(raw_query)
             results = cursor.fetchall()
-    grade_list = list(results)
-    turma = turma_ano+"°"+turma_nome
-    print(turma)
+            grade_list = list(results)
+            turma = turma_ano+"°"+turma_nome
+            print(turma)
 
-    # Render the template with the schedule data
-    return render(request, 'grade/index.html', {"grade": grade_list,"turma": turma})
-
+   # return render(request, 'grade/index.html', {"grade": grade_list,"turma": turma})
+  
+    else:
+      messages.error(request, 'Você não tem permissão para acessar esta página')
+      return render(request, 'home.html')
 
 def nova_turma(request):
     if request.method == 'POST':
@@ -148,7 +191,6 @@ def excluir_horario(request, id):
   
 def avisos(request):
    return render(request, 'avisos/avisos.html')
- 
  
  #def enviar_notificacao(request):
   #  if request.method == 'POST':
