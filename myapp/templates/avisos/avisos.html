@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="container mt-5">
+            <h1><p class="text-center">Enviar aviso<p class="text-center"></p></h1>
+            <div class="row mt-2 mt-3">
+            Identificação: <input name="identificacao" placeholder="Escola ou nome do professor">
+            </div>
+            <div class="row mt-2 mt-3">
+            Turma: <input name="ano" class="form-control-sm" type="text" value="{{ turma.ano }}" placeholder="Selecione turma">
+             </div>
+            <div class="row mt-2 mt-3">
+            Aviso: <input name="aviso" placeholder="Escreva a notificação">
+            </div>
+            <button class="form-control-sm row mt-2 mt-3">Enviar</button>
+        </div>
+    </form>
+{% endblock %}

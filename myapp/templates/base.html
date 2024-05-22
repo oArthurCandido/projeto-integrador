@@ -38,6 +38,9 @@
                 <a class="nav-link {% if request.path == '/turmas/' %} active {% endif %}" aria-current="page" href="/turmas/">Turmas</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link {% if request.path == '/disciplina/' %} active {% endif %}" aria-current="page" href="/disciplina/">Disciplinas</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link {% if request.path == '/horarios/' %} active {% endif %}" aria-current="page" href="/horarios/">Horários</a>
               </li>
               <li class="nav-item dropdown">
@@ -118,7 +121,7 @@
                     </ul>
                   </li>
                 </ul>
-              </li>
+              </li>          
             </ul>
           </div>
         </div>
