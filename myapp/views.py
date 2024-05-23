@@ -117,12 +117,10 @@ def turmas_grade(request, ano, nome):
     turma = turma_ano + "°" + turma_nome
     print(turma)
 
-    # Render the template with the schedule data
     return render(request, 'grade/index.html', {"grade": grade_list, "turma": turma})
 
 def nova_turma(request):
     if request.method == 'POST':
-        # salvar os dados da tela para o banco
         nova_turma = Turma()
         nova_turma.nome = request.POST.get('nome')
         nova_turma.ano = request.POST.get('ano')
@@ -134,7 +132,6 @@ def nova_turma(request):
 
 def editar_turma(request, id):
     turma = Turma.objects.get(pk=id)
-
     if request.method == 'POST':
         turma.nome = request.POST.get('nome')
         turma.ano = request.POST.get('ano')
@@ -155,13 +152,11 @@ def horarios(request):
 
 def novo_horario(request):
     if request.method == 'POST':
-        # salvar os dados da tela para o banco
         novo_horario = Hora_aula()
         novo_horario.dia_semana = request.POST.get('dia_semana')
         novo_horario.horario_inicial = request.POST.get('horario_inicial')
         novo_horario.horario_final = request.POST.get('horario_final')
         novo_horario.save()
-
         # return redirect('horarios')
     
     return render(request, 'horarios/novo_horario.html')

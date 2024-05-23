@@ -20,6 +20,5 @@ urlpatterns = [
     path("horarios/novo_horario", views.novo_horario, name="novo_horario"),
     path('horarios/editar_horario/<int:id>/', views.editar_horario, name='editar_horario'),
     path('excluir_horario/<int:id>/', views.excluir_horario, name='excluir_horario'),
-    path("grade/<slug:slug>", views.turmas_grade, name="grade"),
     path("grade/<int:ano>-<str:nome>/", views.turmas_grade, name="grade"),
 ]
