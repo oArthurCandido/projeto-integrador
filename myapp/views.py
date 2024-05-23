@@ -1,6 +1,6 @@
 from django.db import connection
 from django.views.generic import ListView
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from myapp.models.export_models import Turma, Grade, Hora_aula, Disciplina
 from django.db.models import F, Value as V, CharField, Case, When, Max, Q
 from django.db.models.functions import Concat, Coalesce
@@ -9,8 +9,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreationForm
-from django.contrib.auth.forms import UserCreationForm
-from .models import Turma
+#from django.contrib.auth.forms import UserCreationForm
+#from .models import Turma
 #from django.forms import AvisoForm
 
 def login_view(request):
@@ -20,7 +20,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect(request,'grade.index.html')
         else:
             messages.error(request, 'Usuário ou senha incorretos.')
     return render(request, 'login/login.html')
@@ -28,7 +28,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-  
+
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -36,16 +36,12 @@ def register(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Cadastro realizado com sucesso.')
-            return redirect('home')
+            return redirect('home') 
         else:
-            messages.error(request, 'Por favor, corrija os erros abaixo.')
+            messages.error(request, 'Por favor, corrija os erros abaixo.') 
     else:
         form = CustomUserCreationForm()
     return render(request, 'login/register.html', {'form': form})
-
-#def home(request):
-#    user_profile = get_object_or_404(UserProfile, user=request.user)
-#    turmas_do_usuario = user_profile.turmas.all()
 
 def home(request):
     return render(request, 'home/home.html')
