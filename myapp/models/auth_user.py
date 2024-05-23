@@ -1,7 +1,7 @@
 from django.db import models
 from .turma import Turma
 
-class Aluno(models.Model):
+class Username(models.Model):
     id = models.AutoField(primary_key=True)
     nome = models.TextField(max_length=200)
     sexo = models.TextField(max_length=50)
