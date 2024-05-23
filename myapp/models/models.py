@@ -8,6 +8,6 @@ class Turma(models.Model):
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
 
-class Username(models.Model):
-    user = models.OneToOneField(Username, on_delete=models.CASCADE)
-    turmas = models.ManyToManyField(Turma)
+#class Username(models.Model):
+#    user = models.OneToOneField(Username, on_delete=models.CASCADE)
+#    turmas = models.ManyToManyField(Turma)
