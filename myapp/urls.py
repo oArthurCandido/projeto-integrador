@@ -23,7 +23,7 @@ urlpatterns = [
     path("grade/<int:ano>-<str:nome>/", views.turmas_grade, name="grade"),
     path("agenda/", views.agenda, name="agenda"),
     path("agenda/nova_agenda", views.nova_agenda, name="nova_agenda"),
-    path("agenda/nova_agenda", views.nova_agenda, name="nova_agenda"),
     path("agenda/editar/<int:id>/", views.editar_agenda, name="editar_agenda"),
     path("agenda/excluir/<int:id>/", views.editar_agenda, name="excluir_agenda"),
+ #   path('agenda/<int:turma_id>/', views.agenda, name='agenda'),
 ]

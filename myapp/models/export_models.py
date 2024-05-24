@@ -7,4 +7,6 @@ from myapp.models.hora_aula import Hora_aula
 from myapp.models.professor import Professor
 from myapp.models.responsavel import Responsavel
 from myapp.models.turma import Turma
-__all__ = ['Aluno', 'Disciplina', 'Endereco', 'Grade', 'Parentesco', 'Hora_aula', 'Professor', 'Responsavel', 'Turma']
+from myapp.models.horario import Horario
+from myapp.models.agenda import Agenda
+__all__ = ['Aluno', 'Disciplina', 'Endereco', 'Grade', 'Parentesco', 'Hora_aula', 'Professor', 'Responsavel', 'Turma', 'Horario', 'Agenda']

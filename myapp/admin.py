@@ -10,5 +10,4 @@ admin.site.register(Hora_aula)
 admin.site.register(Professor)
 admin.site.register(Responsavel)
 admin.site.register(Turma)
-
 filter_horizontal = ('groups', 'user_permissions',)

@@ -1,10 +1,44 @@
 {% extends 'base.html' %}
 
-{% block content %}
-  <h2>Cadastrar Nova Agenda</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
-  </form>
+{% block conteudo %}
+<div class="container mt-5">
+    <h1>Nova Agenda</h1>
+    <form method="post">
+        {% csrf_token %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Horário</th>
+                    <th>Segunda</th>
+                    <th>Terça</th>
+                    <th>Quarta</th>
+                    <th>Quinta</th>
+                    <th>Sexta</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for horario in horarios %}
+                <tr>
+                    <td>
+                        <select name="horario_{{ forloop.counter }}" class="form-control">
+                            <option value="{{ horario.id }}">{{ horario.inicio }} - {{ horario.fim }}</option>
+                        </select>
+                    </td>
+                    {% for dia in dias %}
+                    <td>
+                        <select name="disciplina_{{ dia }}_{{ forloop.counter }}" class="form-control">
+                            <option value="">Selecione</option>
+                            {% for disciplina in disciplinas %}
+                            <option value="{{ disciplina.id }}">{{ disciplina.disciplina }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-info mt-3">Salvar</button>
+    </form>
+</div>
 {% endblock %}

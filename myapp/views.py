@@ -1,7 +1,7 @@
 from django.db import connection
 from django.views.generic import ListView
 from django.shortcuts import render, redirect, get_object_or_404
-from myapp.models.export_models import Turma, Grade, Hora_aula, Disciplina
+from myapp.models.export_models import Turma, Grade, Hora_aula, Disciplina, Horario, Agenda
 from django.db.models import F, Value as V, CharField, Case, When, Max, Q
 from django.db.models.functions import Concat, Coalesce
 from django.http import JsonResponse
@@ -9,7 +9,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreationForm, AgendaForm
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 #from django.forms import AvisoForm
 
@@ -237,16 +236,6 @@ def agenda(request):
     items = Grade.objects.all().order_by('id')
     return render(request, 'agenda/agenda.html', {"agenda": items})
 
-def nova_agenda(request):
-    if request.method == 'POST':
-        form = AgendaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('agenda-list')
-    else:
-        form = AgendaForm()
-    return render(request, 'agenda/nova_agenda.html', {'form': form})
-
 def editar_agenda(request, id):
     agenda = Hora_aula.objects.get(pk=id)
     if request.method == 'POST':
@@ -258,7 +247,40 @@ def editar_agenda(request, id):
         form = AgendaForm(instance=agenda)
     return render(request, 'agenda/editar_agenda.html', {'form': form, 'agenda': agenda})
 
-def excluir_agenda(request, id):
-    agenda = Hora_aula.objects.get(pk=id)
-    agenda.delete()
-    return redirect('agenda-list')
+#def excluir_agenda(request, id):
+ #   agenda = Hora_aula.objects.get(pk=id)
+  #  agenda.delete()
+   # return redirect('agenda-list')
+
+def nova_agenda(request):
+    horarios = Hora_aula.objects.all()
+    disciplinas = Disciplina.objects.all()
+    dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta']
+
+    if request.method == 'POST':
+        for idx, horario in enumerate(horarios[:7]):
+            agenda = Agenda(
+                horario=horario,
+                segunda=Disciplina.objects.get(id=request.POST.get(f'disciplina_segunda_{idx+1}')),
+                terca=Disciplina.objects.get(id=request.POST.get(f'disciplina_terca_{idx+1}')),
+                quarta=Disciplina.objects.get(id=request.POST.get(f'disciplina_quarta_{idx+1}')),
+                quinta=Disciplina.objects.get(id=request.POST.get(f'disciplina_quinta_{idx+1}')),
+                sexta=Disciplina.objects.get(id=request.POST.get(f'disciplina_sexta_{idx+1}'))
+            )
+            agenda.save()
+        return redirect('agenda-list')
+
+    context = {
+        'horarios': horarios,
+        'disciplinas': disciplinas,
+        'dias': dias
+    }
+    return render(request, 'agenda/nova_agenda.html', context)
+
+
+#def listar_series(request):
+ #   series = Turma.objects.all()
+  #  context = {
+   #     'series': series
+    #}
+    #return render(request, 'agenda.html', context)
