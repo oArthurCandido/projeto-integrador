@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="conteiner mt-5">
+            <h1>Editar Agenda</h1>
+            Nome: <input name="agenda" class="form-control-sm mt-3" type="text" value="{{ agenda.agenda }}">
+            <button class="btn btn-info form-control-sm">Salvar</button>
+        </div>
+    </form>
+{% endblock %}

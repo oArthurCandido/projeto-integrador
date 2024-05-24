@@ -21,4 +21,9 @@ urlpatterns = [
     path('horarios/editar_horario/<int:id>/', views.editar_horario, name='editar_horario'),
     path('excluir_horario/<int:id>/', views.excluir_horario, name='excluir_horario'),
     path("grade/<int:ano>-<str:nome>/", views.turmas_grade, name="grade"),
+    path("agenda/", views.agenda, name="agenda"),
+    path("agenda/nova_agenda", views.nova_agenda, name="nova_agenda"),
+    path("agenda/nova_agenda", views.nova_agenda, name="nova_agenda"),
+    path("agenda/editar/<int:id>/", views.editar_agenda, name="editar_agenda"),
+    path("agenda/excluir/<int:id>/", views.editar_agenda, name="excluir_agenda"),
 ]
