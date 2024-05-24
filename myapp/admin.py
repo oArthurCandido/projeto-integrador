@@ -1,5 +1,5 @@
 from django.contrib import admin
-from myapp.models.export_models import Aluno, Disciplina, Endereco, Grade, Parentesco, Hora_aula, Professor, Responsavel, Turma, Username
+from myapp.models.export_models import Aluno, Disciplina, Endereco, Grade, Parentesco, Hora_aula, Professor, Responsavel, Turma
 
 admin.site.register(Aluno)
 admin.site.register(Disciplina)
@@ -10,4 +10,5 @@ admin.site.register(Hora_aula)
 admin.site.register(Professor)
 admin.site.register(Responsavel)
 admin.site.register(Turma)
-admin.site.register(Username)
+
+filter_horizontal = ('groups', 'user_permissions',)

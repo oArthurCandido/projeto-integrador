@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreationForm
-#from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 #from .models import Turma
 #from django.forms import AvisoForm
 
@@ -29,7 +29,7 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-def register(request):
+def sign_up(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -41,15 +41,18 @@ def register(request):
             messages.error(request, 'Por favor, corrija os erros abaixo.') 
     else:
         form = CustomUserCreationForm()
-    return render(request, 'login/register.html', {'form': form})
+    return render(request, 'registration/sign_up.html', {'form': form})
 
+@login_required(login_url='/login')
 def home(request):
     return render(request, 'home/home.html')
 
+@login_required(login_url='/login')
 def turmas(request):
     items = Turma.objects.all()
     return render(request, 'turmas/home.html', {"turmas": items})
 
+@login_required(login_url='/login')
 def turmas_grade(request, ano, nome):
     splited_slug = f"{ano}-{nome}".split('-')
     turma_ano = splited_slug[0]
@@ -115,6 +118,7 @@ def turmas_grade(request, ano, nome):
 
     return render(request, 'grade/index.html', {"grade": grade_list, "turma": turma})
 
+@login_required(login_url='/login')
 def nova_turma(request):
     if request.method == 'POST':
         nova_turma = Turma()
@@ -126,6 +130,7 @@ def nova_turma(request):
     
     return render(request, 'turmas/nova_turma.html')
 
+@login_required(login_url='/login')
 def editar_turma(request, id):
     turma = Turma.objects.get(pk=id)
     if request.method == 'POST':
@@ -137,15 +142,19 @@ def editar_turma(request, id):
     
     return render(request, 'turmas/editar_turma.html', {'turma': turma})
 
+@login_required(login_url='/login')
 def excluir_turma(request, id):
     turma = Turma.objects.get(pk=id)
     turma.delete()
     return redirect('turmas')
 
+@login_required(login_url='/login')
 def horarios(request):
     items = Hora_aula.objects.all()
     return render(request, 'horarios/home.html', {"horarios": items})
 
+
+@login_required(login_url='/login')
 def novo_horario(request):
     if request.method == 'POST':
         novo_horario = Hora_aula()
@@ -157,6 +166,7 @@ def novo_horario(request):
     
     return render(request, 'horarios/novo_horario.html')
 
+@login_required(login_url='/login')
 def editar_horario(request, id):
     horario = Hora_aula.objects.get(pk=id)
     print(horario.horario_final)
@@ -171,11 +181,13 @@ def editar_horario(request, id):
     
     return render(request, 'horarios/editar_horario.html', {'horario': horario})
 
+@login_required(login_url='/login')
 def excluir_horario(request, id):
     horario = Hora_aula.objects.get(pk=id)
     horario.delete()
     return redirect('horarios')
   
+@login_required(login_url='/login')
 def avisos(request):
    return render(request, 'avisos/avisos.html')
  
@@ -187,10 +199,12 @@ def avisos(request):
       #      messages.success(request, 'Sua notificação foi enviada')
        #     return render(request, 'avisos/avisos.html', {'form': form})
   
+@login_required(login_url='/login')
 def disciplina(request):
     items = Disciplina.objects.all().order_by('id')
     return render(request, 'disciplina/disciplina.html', {"disciplina": items})
-  
+
+@login_required(login_url='/login') 
 def nova_disciplina(request):
     if request.method == 'POST':
         nova_disciplina = Disciplina()
@@ -201,6 +215,7 @@ def nova_disciplina(request):
     
     return render(request, 'disciplina/nova_disciplina.html')
 
+@login_required(login_url='/login')
 def editar_disciplina(request, id):
     disciplina = Disciplina.objects.get(pk=id)
 
@@ -212,6 +227,7 @@ def editar_disciplina(request, id):
     
     return render(request, 'disciplina/editar_disciplina.html', {'disciplina': disciplina})
 
+@login_required(login_url='/login')
 def excluir_disciplina(request, id):
     disciplina = Disciplina.objects.get(pk=id)
     disciplina.delete()
