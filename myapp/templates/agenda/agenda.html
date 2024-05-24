@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+    <div class="container mt-5">
+        <h1><p class="text-center">Agenda</p></h1>
+        <a class="btn btn-success my-3 mt-3" href="{% url 'nova_agenda' %}">Nova agenda</a>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th class="text-start">ID</th>
+                <th class="text-start">Agenda</th>
+                <th class="text-start">Opções</th>
+            </tr>
+            {% for agenda_item in agenda_list %}
+                <tr>
+                    <td>{{ agenda_item.id }}</td>
+                    <td>{{ agenda_item.agenda }}</td>
+                    <td>
+                        <a href="{% url 'editar_agenda' agenda_item.id %}" class="btn btn-primary btn-sm">Editar</a>
+                        <a href="{% url 'excluir_agenda' agenda_item.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                    </td>
+                </tr>  
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

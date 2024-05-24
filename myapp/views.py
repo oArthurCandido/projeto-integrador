@@ -8,9 +8,9 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, AgendaForm
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-#from .models import Turma
 #from django.forms import AvisoForm
 
 def login_view(request):
@@ -232,3 +232,33 @@ def excluir_disciplina(request, id):
     disciplina = Disciplina.objects.get(pk=id)
     disciplina.delete()
     return redirect('disciplina')
+
+def agenda(request):
+    items = Grade.objects.all().order_by('id')
+    return render(request, 'agenda/agenda.html', {"agenda": items})
+
+def nova_agenda(request):
+    if request.method == 'POST':
+        form = AgendaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('agenda-list')
+    else:
+        form = AgendaForm()
+    return render(request, 'agenda/nova_agenda.html', {'form': form})
+
+def editar_agenda(request, id):
+    agenda = Hora_aula.objects.get(pk=id)
+    if request.method == 'POST':
+        form = AgendaForm(request.POST, instance=agenda)
+        if form.is_valid():
+            form.save()
+            return redirect('agenda-list')
+    else:
+        form = AgendaForm(instance=agenda)
+    return render(request, 'agenda/editar_agenda.html', {'form': form, 'agenda': agenda})
+
+def excluir_agenda(request, id):
+    agenda = Hora_aula.objects.get(pk=id)
+    agenda.delete()
+    return redirect('agenda-list')
