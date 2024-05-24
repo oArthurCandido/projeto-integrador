@@ -31,7 +31,7 @@
           </button>
            <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item dropdown">
+              <!-- <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" data-bs-auto-close="outside" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Home
                   </a>
@@ -40,11 +40,12 @@
                         aria-labelledby="navbarDropdown"
                       >
                         <li><a class="dropdown-item" href="/ ">Página inicial</a></li>
-                        <li><a class="dropdown-item" href="/register">Registrar usuário</a></li>
+                        <!-- <li><a class="dropdown-item" href="/register">Registrar usuário</a></li>
                         <li><a class="dropdown-item" href="/login">Login</a></li>
-                        <li><a class="dropdown-item" href="/login">Logout</a></li>
-                </li>
+                        <li><a class="dropdown-item" href="/login">Logout</a></li> -->
+                <!-- </li> --> -->
               </ul>
+              {% if user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link {% if request.path == '/turmas/' %} active {% endif %}" aria-current="page" href="/turmas/">Turmas</a>
               </li>
@@ -132,7 +133,17 @@
                     </ul>
                   </li>
                 </ul>
-              </li>         
+              </li>    
+              <span class="navbar-text pt-4">Logged in as {{user.username}} | </span>
+              <li class="nav-item"> <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+                {% csrf_token %}
+                <a href="#" class="grp-logout" onclick="document.getElementById('logout-form').submit()"> 
+                  Logout
+                </a>
+              </form></li>     
+              {% else %}
+              <li class="nav-item"><a class="nav-item" href="/login">Login</a></li> 
+              {% endif %}
             </ul>
           </div>
         </div>
