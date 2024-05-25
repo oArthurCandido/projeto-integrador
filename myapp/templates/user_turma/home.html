@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+    <div class="container mt-5">
+        <h1><p class="text-center">Atribuir pais à turma</p></h1>
+    </div>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Nome de usuário</th>
+                <th>Turma</th>
+            </tr>
+
+            {% for user_turma in user_turmas %}
+            <tr>
+                <td>{{ user_turma.1 }}</td>
+                <td>
+                    {% if user_turma.2 == "-" %}
+                    <a href="{% url 'adicionar_turma' user_turma.0 %}" class="btn btn-primary btn-sm">Adicionar turma</a>
+                    {% else %}
+                    {{ user_turma.2 }}
+                    {% endif %}                    
+                </td>
+            </tr>
+            
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

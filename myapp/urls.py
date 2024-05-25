@@ -25,5 +25,7 @@ urlpatterns = [
     path("agenda/nova_agenda", views.nova_agenda, name="nova_agenda"),
     path("agenda/editar/<int:id>/", views.editar_agenda, name="editar_agenda"),
     path("agenda/excluir/<int:id>/", views.editar_agenda, name="excluir_agenda"),
+    path("user_turma", views.user_turma, name="user_turma"),
+    path("user_turma/adicionar_turma/<int:id>", views.adicionar_turma, name="adicionar_turma")
  #   path('agenda/<int:turma_id>/', views.agenda, name='agenda'),
 ]

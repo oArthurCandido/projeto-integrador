@@ -46,6 +46,8 @@
                 <!-- </li> --> -->
               </ul>
               {% if user.is_authenticated %}
+              
+              {% if user.is_superuser %}
               <li class="nav-item">
                 <a class="nav-link {% if request.path == '/turmas/' %} active {% endif %}" aria-current="page" href="/turmas/">Turmas</a>
               </li>
@@ -55,9 +57,10 @@
               <li class="nav-item">
                 <a class="nav-link {% if request.path == '/horarios/' %} active {% endif %}" aria-current="page" href="/horarios/">Horários</a>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link {% if request.path == '/agenda/' %} active {% endif %}" aria-current="page" href="/agenda/">Agenda</a>
-              </li>
+              </li> -->
+              {% endif %}
               <li class="nav-item dropdown">
                 <a
                   class="nav-link dropdown-toggle"
@@ -138,7 +141,7 @@
                 </ul>
               </li>    
               <span class="navbar-text pt-4">Logged in as {{user.username}} | </span>
-              <li class="nav-item"> <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+              <li class="nav-item"> <form id="logout-form" method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <a href="#" class="grp-logout" onclick="document.getElementById('logout-form').submit()"> 
                   Logout
