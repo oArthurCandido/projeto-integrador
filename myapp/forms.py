@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Agenda, Hora_aula, Disciplina, Turma
+from .models import Agenda, Avisos, Hora_aula, Disciplina, Turma
 from django.utils.translation import gettext_lazy as _
 from django.contrib import admin
 from django.contrib.auth import get_user_model
@@ -32,4 +32,7 @@ class AgendaForm(forms.ModelForm):
         model = Agenda
         fields = '__all__'
  
- 
+class AvisosForm(forms.ModelForm):
+    class Meta:
+        model = Avisos
+        fields = ['identificacao', 'ano', 'aviso']

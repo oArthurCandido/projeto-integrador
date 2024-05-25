@@ -1,17 +1,16 @@
 from django.db import connection
 from django.views.generic import ListView
 from django.shortcuts import render, redirect, get_object_or_404
-from myapp.models.export_models import Turma, Grade, Hora_aula, Disciplina, Horario, Agenda, User_Turma
+from myapp.models.export_models import Turma, Grade, Hora_aula, Disciplina, Avisos, Agenda, User_Turma
 from django.db.models import F, Value as V, CharField, Case, When, Max, Q
 from django.db.models.functions import Concat, Coalesce
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import CustomUserCreationForm, AgendaForm
+from .forms import CustomUserCreationForm, AgendaForm, AvisosForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
-#from django.forms import AvisoForm
 
 def login_view(request):
     if request.method == 'POST':
@@ -263,14 +262,18 @@ def excluir_horario(request, id):
 @user_passes_test(lambda u: u.is_superuser)
 def avisos(request):
    return render(request, 'avisos/avisos.html')
- 
- #def enviar_notificacao(request):
-  #  if request.method == 'POST':
-   #     form = NotificacaoForm(request.POST)
-    #    if form.is_valid():
-     #       form.save()                # para salvar a notificação enviada no bd
-      #      messages.success(request, 'Sua notificação foi enviada')
-       #     return render(request, 'avisos/avisos.html', {'form': form})
+
+@login_required(login_url='/login') 
+def enviar_notificacao(request):
+    if request.method == 'POST':
+        form = AvisosForm(request.POST)
+        if form.is_valid():
+            form.save()  
+            messages.success(request, 'Sua notificação foi enviada')
+            return redirect('avisos')  
+    else:
+        form = AvisosForm()
+    return render(request, 'avisos/avisos.html', {'form': form})
   
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
@@ -361,10 +364,3 @@ def nova_agenda(request):
     }
     return render(request, 'agenda/nova_agenda.html', context)
 
-
-#def listar_series(request):
- #   series = Turma.objects.all()
-  #  context = {
-   #     'series': series
-    #}
-    #return render(request, 'agenda.html', context)

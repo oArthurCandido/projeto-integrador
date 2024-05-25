@@ -35,3 +35,11 @@ class Agenda(models.Model):
     quarta = models.ForeignKey(Disciplina, related_name='quarta', on_delete=models.SET_NULL, null=True, blank=True)
     quinta = models.ForeignKey(Disciplina, related_name='quinta', on_delete=models.SET_NULL, null=True, blank=True)
     sexta = models.ForeignKey(Disciplina, related_name='sexta', on_delete=models.SET_NULL, null=True, blank=True)
+
+class Avisos(models.Model):
+    identificacao = models.CharField(max_length=100)
+    ano = models.CharField(max_length=10)
+    aviso = models.TextField()
+
+    def __str__(self):
+        return f"{self.identificacao} - {self.ano}"
