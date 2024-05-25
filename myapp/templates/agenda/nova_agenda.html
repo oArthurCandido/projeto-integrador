@@ -21,7 +21,7 @@
                 <tr>
                     <td>
                         <select name="horario_{{ forloop.counter }}" class="form-control">
-                            <option value="{{ horario.id }}">{{ horario.inicio }} - {{ horario.fim }}</option>
+                            <option value="{{ horario.id }}">{{ horario.horario_inicial }} - {{ horario.horario_final }}</option>
                         </select>
                     </td>
                     {% for dia in dias %}
