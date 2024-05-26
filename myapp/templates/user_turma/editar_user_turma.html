@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="container mt-5">
+            <h1>Editar Turma Atribuída</h1>
+            <select name="turma_id" class="form-control pb-3">
+                <option value="">Selecione</option>
+                {% for turma in turmas %}
+                <option value="{{ turma.id }}" {% if turma.id == user_turma.turma.id %}selected{% endif %}>{{ turma.ano }}-{{ turma.nome }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-info form-control-sm">Salvar</button>
+        </div>
+    </form>
+{% endblock %}
