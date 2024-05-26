@@ -35,4 +35,4 @@ class AgendaForm(forms.ModelForm):
 class AvisosForm(forms.ModelForm):
     class Meta:
         model = Avisos
-        fields = ['identificacao', 'ano', 'aviso']
+        fields = ['identificacao', 'turma', 'aviso']

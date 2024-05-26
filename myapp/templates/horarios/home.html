@@ -7,7 +7,6 @@
         <table class="table table-bordered table-striped">
             <tr>
                 <th>ID</th>
-
                 <th>Hora inicial</th>
                 <th>Hora final</th>
                 <th>Opções</th>
@@ -21,10 +20,12 @@
                
                 <td>
                     <a href="{% url 'editar_horario' horario.id %}" class="btn btn-primary btn-sm">Editar</a>
-                    <a href="{% url 'excluir_horario' horario.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                    <form action="{% url 'excluir_horario' horario.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                    </form>
                 </td> 
             </tr>
-            
             {% endfor %}
         </table>
     </div>

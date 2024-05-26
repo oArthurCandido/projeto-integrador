@@ -221,7 +221,7 @@ def excluir_turma(request, id):
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
 def horarios(request):
-    items = Hora_aula.objects.all()
+    items = Hora_aula.objects.all().order_by('horario_inicial')
     return render(request, 'horarios/home.html', {"horarios": items})
 
 @login_required(login_url='/login')
@@ -252,26 +252,36 @@ def editar_horario(request, id):
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
 def excluir_horario(request, id):
-    horario = Hora_aula.objects.get(pk=id)
-    horario.delete()
-    return redirect('horarios')
+    horario = get_object_or_404(Hora_aula, pk=id)
+
+    if request.method == 'POST':
+        agendas_a_atualizar = Agenda.objects.filter(horario=horario)
+        agendas_a_atualizar.update(horario=None)
+        horario.delete()
+
+        return redirect('horarios')
+
+    return render(request, 'horarios/home.html', {'horario': horario})
   
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
 def avisos(request):
    return render(request, 'avisos/avisos.html')
 
-@login_required(login_url='/login') 
+@login_required(login_url='/login')
+@user_passes_test(lambda u: u.is_superuser)
 def enviar_notificacao(request):
     if request.method == 'POST':
         form = AvisosForm(request.POST)
         if form.is_valid():
-            form.save()  
+            form.save()
             messages.success(request, 'Sua notificação foi enviada')
-            return redirect('avisos')  
+            return redirect('avisos')
     else:
         form = AvisosForm()
-    return render(request, 'avisos/avisos.html', {'form': form})
+
+    turmas = Turma.objects.all() 
+    return render(request, 'avisos/avisos.html', {'form': form, 'turmas': turmas})
   
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
@@ -344,35 +354,63 @@ def nova_agenda(request):
     horarios_choices = [(horario.id, f"{horario.horario_inicial.strftime('%H:%M')} - {horario.horario_final.strftime('%H:%M')}") for horario in horarios]
     disciplinas = Disciplina.objects.all()
     dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta']
-    num_linhas = 7  
+    num_linhas = 7
+    linhas = list(range(num_linhas))  # Gerar uma lista de números de 0 a num_linhas-1
+    turmas = Turma.objects.all()
 
     if request.method == 'POST':
-        for idx in range(num_linhas):
-            horario_id = request.POST.get(f'horario_{idx+1}')
-            if horario_id:
-                agenda = Agenda(
-                    horario=Hora_aula.objects.get(id=horario_id),
-                    segunda=Disciplina.objects.get(id=request.POST.get(f'disciplina_segunda_{idx+1}')),
-                    terca=Disciplina.objects.get(id=request.POST.get(f'disciplina_terca_{idx+1}')),
-                    quarta=Disciplina.objects.get(id=request.POST.get(f'disciplina_quarta_{idx+1}')),
-                    quinta=Disciplina.objects.get(id=request.POST.get(f'disciplina_quinta_{idx+1}')),
-                    sexta=Disciplina.objects.get(id=request.POST.get(f'disciplina_sexta_{idx+1}'))
-                )
-                agenda.save()
-        return redirect('agenda-list')
+        turma_id = request.POST.get('turma')
+        if turma_id:
+            turma = Turma.objects.get(id=turma_id)
+            for idx in range(num_linhas):
+                horario_id = request.POST.get(f'horario_{idx+1}')
+                if horario_id:
+                    segunda_id = request.POST.get(f'disciplina_segunda_{idx+1}')
+                    terca_id = request.POST.get(f'disciplina_terca_{idx+1}')
+                    quarta_id = request.POST.get(f'disciplina_quarta_{idx+1}')
+                    quinta_id = request.POST.get(f'disciplina_quinta_{idx+1}')
+                    sexta_id = request.POST.get(f'disciplina_sexta_{idx+1}')
+
+                    if segunda_id and terca_id and quarta_id and quinta_id and sexta_id:
+                        agenda = Agenda(
+                            horario=Hora_aula.objects.get(id=horario_id),
+                            segunda=Disciplina.objects.get(id=segunda_id),
+                            terca=Disciplina.objects.get(id=terca_id),
+                            quarta=Disciplina.objects.get(id=quarta_id),
+                            quinta=Disciplina.objects.get(id=quinta_id),
+                            sexta=Disciplina.objects.get(id=sexta_id),
+                            turma=turma
+                        )
+                        agenda.save()
+                    else:
+                        return render(request, 'agenda/nova_agenda.html', {
+                            'horarios': horarios_choices,
+                            'disciplinas': disciplinas,
+                            'dias': dias,
+                            'linhas': linhas,
+                            'turmas': turmas,
+                            'error': 'Preencha todas as disciplinas para cada horário.'
+                        })
+            return redirect('agenda-list')
+        else:
+            return render(request, 'agenda/nova_agenda.html', {
+                'horarios': horarios_choices,
+                'disciplinas': disciplinas,
+                'dias': dias,
+                'linhas': linhas,
+                'turmas': turmas,
+                'error': 'Selecione uma turma.'
+            })
 
     context = {
         'horarios': horarios_choices,
         'disciplinas': disciplinas,
         'dias': dias,
-        'num_linhas': 7  
+        'linhas': linhas,
+        'turmas': turmas
     }
 
     return render(request, 'agenda/nova_agenda.html', context)
-
-
-
-
 
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)

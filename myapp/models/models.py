@@ -37,17 +37,21 @@ class Disciplina(models.Model):
         return self.nome
 
 class Agenda(models.Model):
-    horario = models.ForeignKey(Hora_aula, on_delete=models.CASCADE)
+    horario = models.ForeignKey(Hora_aula, on_delete=models.SET_NULL, null=True, blank=True)
     segunda = models.ForeignKey(Disciplina, related_name='segunda', on_delete=models.SET_NULL, null=True, blank=True)
     terca = models.ForeignKey(Disciplina, related_name='terca', on_delete=models.SET_NULL, null=True, blank=True)
     quarta = models.ForeignKey(Disciplina, related_name='quarta', on_delete=models.SET_NULL, null=True, blank=True)
     quinta = models.ForeignKey(Disciplina, related_name='quinta', on_delete=models.SET_NULL, null=True, blank=True)
     sexta = models.ForeignKey(Disciplina, related_name='sexta', on_delete=models.SET_NULL, null=True, blank=True)
+    turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
 
 class Avisos(models.Model):
+    id = models.AutoField(primary_key=True)
     identificacao = models.CharField(max_length=100)
-    ano = models.CharField(max_length=10)
+    #ano = models.CharField(max_length=10)
+    turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
     aviso = models.TextField()
-
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
     def __str__(self):
-        return f"{self.identificacao} - {self.ano}"
+        return f"{self.identificacao} - {self.turma}"
