@@ -18,23 +18,28 @@
             </thead>
             <tbody>
                 {% for horario in horarios %}
-                <tr>
-                    <td>
-                        <select name="horario_{{ forloop.counter }}" class="form-control">
-                            <option value="{{ horario.id }}">{{ horario.horario_inicial }} - {{ horario.horario_final }}</option>
-                        </select>
-                    </td>
-                    {% for dia in dias %}
-                    <td>
-                        <select name="disciplina_{{ dia }}_{{ forloop.counter }}" class="form-control">
-                            <option value="">Selecione</option>
-                            {% for disciplina in disciplinas %}
-                            <option value="{{ disciplina.id }}">{{ disciplina.disciplina }}</option>
+                    {% if forloop.counter <= num_linhas %}
+                        <tr>
+                            <td>
+                                <select name="horario" class="form-control">
+                                    <option value="">Selecione</option>
+                                    {% for horario_id, horario_label in horarios %}
+                                        <option value="{{ horario_id }}">{{ horario_label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            {% for dia in dias %}
+                                <td>
+                                    <select name="disciplina_{{ dia }}_{{ forloop.counter }}" class="form-control">
+                                        <option value="">Selecione</option>
+                                        {% for disciplina in disciplinas %}
+                                            <option value="{{ disciplina.id }}">{{ disciplina.disciplina }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
                             {% endfor %}
-                        </select>
-                    </td>
-                    {% endfor %}
-                </tr>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>

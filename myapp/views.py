@@ -11,6 +11,7 @@ from django.contrib import messages
 from .forms import CustomUserCreationForm, AgendaForm, AvisosForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
+from django.utils.translation import gettext_lazy as _
 
 def login_view(request):
     if request.method == 'POST':
@@ -37,7 +38,7 @@ def sign_up(request):
             messages.success(request, 'Cadastro realizado com sucesso.')
             return redirect('home') 
         else:
-            messages.error(request, 'Por favor, corrija os erros abaixo.') 
+            messages.error(request, 'Por favor, corrija os dados.') 
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/sign_up.html', {'form': form})
@@ -45,7 +46,6 @@ def sign_up(request):
 def home(request):
     return render(request, 'home/home.html')
     
-    adicionar_turma
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
 def adicionar_turma(request, id):
@@ -65,19 +65,22 @@ def adicionar_turma(request, id):
 
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
-def user_turma(request):    
-    raw_query = f"""
+def user_turma(request):
+    raw_query = """
         SELECT
             u.id as user_id,
             u.username as username,
-            concat( t.ano,
-                '-',
-                t.nome) as turma
+            COALESCE(CONCAT(t.ano, '-', t.nome), '-') as turma
         FROM
-            auth_user AS u LEFT JOIN myapp_user_turma AS ut ON ut.user_id = u.id
-            LEFT JOIN myapp_turma AS t ON ut.turma_id = t.id
+            auth_user AS u
+        LEFT JOIN
+            myapp_user_turma AS ut ON ut.user_id = u.id
+        LEFT JOIN
+            myapp_turma AS t ON ut.turma_id = t.id
         WHERE
-            u.is_superuser = 'FALSE'
+            u.is_superuser = FALSE
+        ORDER BY
+            u.id
     """
 
     with connection.cursor() as cursor:
@@ -221,17 +224,15 @@ def horarios(request):
     items = Hora_aula.objects.all()
     return render(request, 'horarios/home.html', {"horarios": items})
 
-
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
 def novo_horario(request):
     if request.method == 'POST':
         novo_horario = Hora_aula()
-        novo_horario.dia_semana = request.POST.get('dia_semana')
         novo_horario.horario_inicial = request.POST.get('horario_inicial')
         novo_horario.horario_final = request.POST.get('horario_final')
         novo_horario.save()
-        # return redirect('horarios')
+        return redirect('horarios')
     
     return render(request, 'horarios/novo_horario.html')
 
@@ -239,14 +240,11 @@ def novo_horario(request):
 @user_passes_test(lambda u: u.is_superuser)
 def editar_horario(request, id):
     horario = Hora_aula.objects.get(pk=id)
-    print(horario.horario_final)
 
     if request.method == 'POST':
-        horario.dia_semana = request.POST.get('dia_semana')
         horario.horario_inicial = request.POST.get('horario_inicial')
         horario.horario_final = request.POST.get('horario_final')
         horario.save()
-
         return redirect('horarios')
     
     return render(request, 'horarios/editar_horario.html', {'horario': horario})
@@ -332,6 +330,8 @@ def editar_agenda(request, id):
         form = AgendaForm(instance=agenda)
     return render(request, 'agenda/editar_agenda.html', {'form': form, 'agenda': agenda})
 
+#@login_required(login_url='/login')
+#@user_passes_test(lambda u: u.is_superuser)
 #def excluir_agenda(request, id):
  #   agenda = Hora_aula.objects.get(pk=id)
   #  agenda.delete()
@@ -340,27 +340,58 @@ def editar_agenda(request, id):
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
 def nova_agenda(request):
-    horarios = Hora_aula.objects.filter(dia_semana = 'Segunda-feira')
+    horarios = Hora_aula.objects.all()
+    horarios_choices = [(horario.id, f"{horario.horario_inicial.strftime('%H:%M')} - {horario.horario_final.strftime('%H:%M')}") for horario in horarios]
     disciplinas = Disciplina.objects.all()
     dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta']
+    num_linhas = 7  
 
     if request.method == 'POST':
-        for idx, horario in enumerate(horarios[:7]):
-            agenda = Agenda(
-                horario=horario,
-                segunda=Disciplina.objects.get(id=request.POST.get('disciplina_segunda_{idx+1}')),
-                terca=Disciplina.objects.get(id=request.POST.get('disciplina_terca_{idx+1}')),
-                quarta=Disciplina.objects.get(id=request.POST.get('disciplina_quarta_{idx+1}')),
-                quinta=Disciplina.objects.get(id=request.POST.get('disciplina_quinta_{idx+1}')),
-                sexta=Disciplina.objects.get(id=request.POST.get('disciplina_sexta_{idx+1}'))
-            )
-            agenda.save()
+        for idx in range(num_linhas):
+            horario_id = request.POST.get(f'horario_{idx+1}')
+            if horario_id:
+                agenda = Agenda(
+                    horario=Hora_aula.objects.get(id=horario_id),
+                    segunda=Disciplina.objects.get(id=request.POST.get(f'disciplina_segunda_{idx+1}')),
+                    terca=Disciplina.objects.get(id=request.POST.get(f'disciplina_terca_{idx+1}')),
+                    quarta=Disciplina.objects.get(id=request.POST.get(f'disciplina_quarta_{idx+1}')),
+                    quinta=Disciplina.objects.get(id=request.POST.get(f'disciplina_quinta_{idx+1}')),
+                    sexta=Disciplina.objects.get(id=request.POST.get(f'disciplina_sexta_{idx+1}'))
+                )
+                agenda.save()
         return redirect('agenda-list')
 
     context = {
-        'horarios': horarios,
+        'horarios': horarios_choices,
         'disciplinas': disciplinas,
-        'dias': dias
+        'dias': dias,
+        'num_linhas': 7  
     }
+
     return render(request, 'agenda/nova_agenda.html', context)
 
+
+
+
+
+@login_required(login_url='/login')
+@user_passes_test(lambda u: u.is_superuser)
+def editar_user_turma(request, user_turma_id):
+    user_turma = get_object_or_404(User_Turma, pk=user_turma_id)
+    turmas = Turma.objects.all()
+
+    if request.method == 'POST':
+        turma = Turma.objects.get(pk=request.POST.get('turma_id'))
+        user_turma.turma = turma
+        user_turma.save()
+
+        return redirect('user_turma')
+    
+    return render(request, 'user_turma/editar_user_turma.html', {'user_turma': user_turma, 'turmas': turmas})
+
+@login_required(login_url='/login')
+@user_passes_test(lambda u: u.is_superuser)
+def excluir_user_turma(request, user_turma_id):
+    user_turma = get_object_or_404(User_Turma, pk=user_turma_id)
+    user_turma.delete()
+    return redirect('user_turma')
