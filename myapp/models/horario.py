@@ -6,3 +6,4 @@ class Horario(models.Model):
 
     def __str__(self):
         return f"{self.inicio} - {self.fim}"
+

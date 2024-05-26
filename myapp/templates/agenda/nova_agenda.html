@@ -3,8 +3,20 @@
 {% block conteudo %}
 <div class="container mt-5">
     <h1>Nova Agenda</h1>
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
+        <div class="mb-3">
+            <label for="turma" class="form-label">Selecione a turma:</label>
+            <select id="turma" name="turma" class="form-control">
+                <option value="">Selecione a turma</option>
+                {% for turma in turmas %}
+                    <option value="{{ turma.id }}">{{ turma.ano }} - {{ turma.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -17,29 +29,27 @@
                 </tr>
             </thead>
             <tbody>
-                {% for horario in horarios %}
-                    {% if forloop.counter <= num_linhas %}
-                        <tr>
+                {% for _ in linhas %}
+                    <tr>
+                        <td>
+                            <select name="horario_{{ forloop.counter }}" class="form-control">
+                                <option value="">Horário</option>
+                                {% for horario_id, horario_label in horarios %}
+                                    <option value="{{ horario_id }}">{{ horario_label }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        {% for dia in dias %}
                             <td>
-                                <select name="horario" class="form-control">
-                                    <option value="">Selecione</option>
-                                    {% for horario_id, horario_label in horarios %}
-                                        <option value="{{ horario_id }}">{{ horario_label }}</option>
+                                <select name="disciplina_{{ dia }}_{{ forloop.counter }}" class="form-control">
+                                    <option value="">Disciplina</option>
+                                    {% for disciplina in disciplinas %}
+                                        <option value="{{ disciplina.id }}">{{ disciplina.disciplina }}</option>
                                     {% endfor %}
                                 </select>
                             </td>
-                            {% for dia in dias %}
-                                <td>
-                                    <select name="disciplina_{{ dia }}_{{ forloop.counter }}" class="form-control">
-                                        <option value="">Selecione</option>
-                                        {% for disciplina in disciplinas %}
-                                            <option value="{{ disciplina.id }}">{{ disciplina.disciplina }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endif %}
+                        {% endfor %}
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

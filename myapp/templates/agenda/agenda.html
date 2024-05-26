@@ -1,25 +1,42 @@
 {% extends 'base.html' %}
 
 {% block conteudo %}
-    <div class="container mt-5">
-        <h1><p class="text-center">Agenda</p></h1>
-        <a class="btn btn-success my-3 mt-3" href="{% url 'nova_agenda' %}">Nova agenda</a>
-        <table class="table table-bordered table-striped">
-            <tr>
-                <th class="text-start">ID</th>
-                <th class="text-start">Agenda</th>
-                <th class="text-start">Opções</th>
-            </tr>
-            {% for agenda_item in agenda_list %}
-                <tr>
-                    <td>{{ agenda_item.id }}</td>
-                    <td>{{ agenda_item.agenda }}</td>
-                    <td>
+<div class="container mt-5">
+    <h1><p class="text-center">Agenda {{ turma }}</p></h1>
+    <a class="btn btn-success my-3 mt-3" href="{% url 'nova_agenda' %}">Nova agenda</a>
+
+    {% if grade %}
+    <table class="table table-bordered table-striped mt-5">
+        <tr>
+            <th class="text-start">Horário</th>
+            <th class="text-start">Segunda</th>
+            <th class="text-start">Terça</th>
+            <th class="text-start">Quarta</th>
+            <th class="text-start">Quinta</th>
+            <th class="text-start">Sexta</th> 
+        </tr>
+        {% for aula in grade %}
+        <tr>
+            {% for i in aula %}
+            {% if i == None %}
+            <td class="text-center">x</td>
+            {% else %}
+                <td class="text-start">{{ i }}</td>
+            {% endif %}
+            {% endfor %}
+            <td>
+                {% for agenda_item in aula %}
+                    {% if agenda_item %}
                         <a href="{% url 'editar_agenda' agenda_item.id %}" class="btn btn-primary btn-sm">Editar</a>
                         <a href="{% url 'excluir_agenda' agenda_item.id %}" class="btn btn-danger btn-sm">Excluir</a>
-                    </td>
-                </tr>  
-            {% endfor %}
-        </table>
-    </div>
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="text-center">Nenhuma agenda disponível.</p>
+    {% endif %}
+</div>
 {% endblock %}

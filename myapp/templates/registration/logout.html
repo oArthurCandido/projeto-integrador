@@ -7,7 +7,7 @@
         <h1><p class="text-center">Lesbrescola</p></h1>
     </div>
     <div class="container mt-5">
-        <h6><p class="text-center">{{ username }} Clique para fazer logout!</p></h6>
+        <h6><p class="text-center">{{user.username}} Clique para fazer logout!</p></h6>
         <form action="{% url 'admin:logout' %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-primary btn-block">Logout</button>
