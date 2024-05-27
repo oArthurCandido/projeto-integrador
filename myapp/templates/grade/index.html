@@ -2,45 +2,49 @@
 
 {% block conteudo %}
 
-
-
-{% if grade %}
-    <div class="container mt-5">
-
-        <h1><p class="text-center ">Agenda da turma {{turma}}</p></h1>
-        <table class="table table-bordered table-striped mt-5">
-            <tr>
-                <th class="text-start">Horário</th>
-                <th class="text-start">Segunda</th>
-                <th class="text-start">Terça</th>
-                <th class="text-start">Quarta</th>
-                <th class="text-start">Quinta</th>
-                <th class="text-start">Sexta</th> 
-            </tr>
-            {% for aula in grade %}
-            <tr>
-                {% for i in aula %}
-                {% if i == None %}
-                <td class="text-center">x</td>
-                {% else %}
-                    <td class="text-start">{{ i }}</td>
-                {% endif %}
-                {% endfor %}    
-            </tr>          
-            {% endfor %}
-        </table>
-    </div>
-{% elif user.is_superuser or valid_user%}
-    <div  class="alert alert-primary" role="alert" > <h1><p class="text-center "> Agenda da turma {{turma}} não encontrada.</p></h1></div>
-{% elif not user.is_superuser %}
-    <div  class="alert alert-danger" role="alert" > <h1><p class="text-center "> {{user.username}} não tem permissão para visualizar turma {{turma}}</p></h1></div>
-{% endif %}
-
-
 {% if user.is_superuser%}
-    <a class="btn btn-success my-3 mt-3" href="{% url 'nova_agenda' %}">Nova agenda</a>
-    <div  class="alert alert-primary" role="alert" > <h1><p class="text-center ">Cadastre uma nova agenda</p></h1></div>
+<a class="btn btn-success my-3 mt-3" href="{% url 'nova_agenda' %}">Nova agenda</a>
 {% endif %}
+{% if grade %}
+<div class="container mt-5">
+
+    <h1><p class="text-center ">Agenda da turma {{turma}}</p></h1>
+    <table class="table table-bordered table-striped mt-5">
+        <tr>
+            <th class="text-start">Horário</th>
+            <th class="text-start">Segunda</th>
+            <th class="text-start">Terça</th>
+            <th class="text-start">Quarta</th>
+            <th class="text-start">Quinta</th>
+            <th class="text-start">Sexta</th> 
+        </tr>
+        {% for aula in grade %}
+        <tr>
+            {% for i in aula %}
+            {% if i == None %}
+            <td class="text-center">x</td>
+            {% else %}
+                <td class="text-start">{{ i }}</td>
+            {% endif %}
+            {% endfor %}    
+        </tr>          
+        {% endfor %}
+    </table>
+</div>
+{% elif user.is_superuser or valid_user %}
+   
+    <div  class="alert alert-primary" role="alert" > <h1><p class="text-center "> Agenda da turma {{turma}} não encontrada.</p></h1></div>
+    {% if user.is_superuser%}
+    <div  class="alert alert-primary" role="alert" > <h1><p class="text-center ">Cadastre uma nova agenda</p></h1></div>
+    {% endif %}
+
+{% else %}
+<div  class="alert alert-danger" role="alert" > <h1><p class="text-center "> {{user.username}} não tem permissão para visualizar turma {{turma}}</p></h1></div>
+{% endif %}
+    
+
+
+
         
 {% endblock %}
 
