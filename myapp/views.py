@@ -121,9 +121,7 @@ def turmas_grade(request, ano, nome):
     with connection.cursor() as cursor:
         cursor.execute(raw_user_query)
 
-    valid_user = False
-
-    if cursor.rowcount > 0 :
+    if user.is_superuser or cursor.rowcount > 0 :
         valid_user = True
         raw_query = f"""
             SELECT
@@ -182,6 +180,7 @@ def turmas_grade(request, ano, nome):
         grade_list = list(results)
 
     else:
+        valid_user = False
         grade_list = []
 
     turma = turma_ano + "°" + turma_nome
@@ -362,7 +361,7 @@ def nova_agenda(request):
     turmas = Turma.objects.all()
 
     if request.method == 'POST':
-        turma_id = request.POST.get('turma') | id
+        turma_id = request.POST.get('turma')
         if turma_id:
             turma = Turma.objects.get(id=turma_id)
             for idx in range(num_linhas):
