@@ -1,7 +1,7 @@
 from django.db import connection
 from django.views.generic import ListView
 from django.shortcuts import render, redirect, get_object_or_404
-from myapp.models.export_models import Turma, Grade, Hora_aula, Disciplina, Avisos, Agenda, User_Turma
+from myapp.models.export_models import Turma, Grade, Hora_aula, Disciplina, Avisos, User_Turma
 from django.db.models import F, Value as V, CharField, Case, When, Max, Q
 from django.db.models.functions import Concat, Coalesce
 from django.http import JsonResponse
@@ -121,7 +121,7 @@ def turmas_grade(request, ano, nome):
     with connection.cursor() as cursor:
         cursor.execute(raw_user_query)
 
-    if user.is_superuser or cursor.rowcount > 0 :
+    if cursor.rowcount > 0 :
         raw_query = f"""
             SELECT
                 CONCAT(
@@ -131,32 +131,32 @@ def turmas_grade(request, ano, nome):
                 ) AS "Horário",
                 MAX(
                     CASE
-                        WHEN x4.dia_semana = 'Segunda-feira' THEN COALESCE(x2.disciplina, 'No Subject')
+                        WHEN x1.dia_semana = 'Segunda-feira' THEN COALESCE(x2.disciplina, 'No Subject')
                     END
                 ) AS "Segunda-feira",
                 MAX(
                     CASE
-                        WHEN x4.dia_semana = 'Terça-feira' THEN COALESCE(x2.disciplina, 'No Subject')
+                        WHEN x1.dia_semana = 'Terça-feira' THEN COALESCE(x2.disciplina, 'No Subject')
                     END
                 ) AS "Terça-feira",
                 MAX(
                     CASE
-                        WHEN x4.dia_semana = 'Quarta-feira' THEN COALESCE(x2.disciplina, 'No Subject')
+                        WHEN x1.dia_semana = 'Quarta-feira' THEN COALESCE(x2.disciplina, 'No Subject')
                     END
                 ) AS "Quarta-feira",
                 MAX(
                     CASE
-                        WHEN x4.dia_semana = 'Quinta-feira' THEN COALESCE(x2.disciplina, 'No Subject')
+                        WHEN x1.dia_semana = 'Quinta-feira' THEN COALESCE(x2.disciplina, 'No Subject')
                     END
                 ) AS "Quinta-feira",
                 MAX(
                     CASE
-                        WHEN x4.dia_semana = 'Sexta-feira' THEN COALESCE(x2.disciplina, 'No Subject')
+                        WHEN x1.dia_semana = 'Sexta-feira' THEN COALESCE(x2.disciplina, 'No Subject')
                     END
                 ) AS "Sexta-feira"
             FROM
-                myapp_hora_aula AS x4
-                LEFT JOIN myapp_grade AS x1 ON x4.id = x1.hora_aula_id
+                myapp_grade AS x1
+                LEFT JOIN myapp_hora_aula AS x4 ON x4.id = x1.hora_aula_id
                 LEFT JOIN myapp_disciplina AS x2 ON x2.id = x1.disciplina_id
                 LEFT JOIN myapp_turma AS x3 ON x3.id = x1.turma_id
             WHERE
@@ -177,7 +177,7 @@ def turmas_grade(request, ano, nome):
             cursor.execute(raw_query)
             results = cursor.fetchall()
         grade_list = list(results)
-        
+
     else:
         grade_list = []
 
@@ -255,8 +255,8 @@ def excluir_horario(request, id):
     horario = get_object_or_404(Hora_aula, pk=id)
 
     if request.method == 'POST':
-        agendas_a_atualizar = Agenda.objects.filter(horario=horario)
-        agendas_a_atualizar.update(horario=None)
+        grade = Grade.objects.filter(hora_aula=horario)
+        grade.update(horario=None)
         horario.delete()
 
         return redirect('horarios')
@@ -351,7 +351,7 @@ def editar_agenda(request, id):
 @user_passes_test(lambda u: u.is_superuser)
 def nova_agenda(request):
     horarios = Hora_aula.objects.all()
-    horarios_choices = [(horario.id, f"{horario.horario_inicial.strftime('%H:%M')} - {horario.horario_final.strftime('%H:%M')}") for horario in horarios]
+    # horarios_choices = [(horario.id, f"{horario.horario_inicial.strftime('%H:%M')} - {horario.horario_final.strftime('%H:%M')}") for horario in horarios]
     disciplinas = Disciplina.objects.all()
     dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta']
     num_linhas = 7
@@ -359,42 +359,42 @@ def nova_agenda(request):
     turmas = Turma.objects.all()
 
     if request.method == 'POST':
-        turma_id = request.POST.get('turma')
+        turma_id = request.POST.get('turma') | id
         if turma_id:
             turma = Turma.objects.get(id=turma_id)
             for idx in range(num_linhas):
-                horario_id = request.POST.get(f'horario_{idx+1}')
+                i = idx + 1
+                horario_id = request.POST.get(f'horario_{i}')
                 if horario_id:
-                    segunda_id = request.POST.get(f'disciplina_segunda_{idx+1}')
-                    terca_id = request.POST.get(f'disciplina_terca_{idx+1}')
-                    quarta_id = request.POST.get(f'disciplina_quarta_{idx+1}')
-                    quinta_id = request.POST.get(f'disciplina_quinta_{idx+1}')
-                    sexta_id = request.POST.get(f'disciplina_sexta_{idx+1}')
+                    print(i)
+                    horario = Hora_aula.objects.get(id = horario_id)
+                    segunda_id = request.POST.get(f'disciplina_segunda_{i}')
+                    terca_id = request.POST.get(f'disciplina_terca_{i}')
+                    quarta_id = request.POST.get(f'disciplina_quarta_{i}')
+                    quinta_id = request.POST.get(f'disciplina_quinta_{i}')
+                    sexta_id = request.POST.get(f'disciplina_sexta_{i}')
 
-                    if segunda_id and terca_id and quarta_id and quinta_id and sexta_id:
-                        agenda = Agenda(
-                            horario=Hora_aula.objects.get(id=horario_id),
-                            segunda=Disciplina.objects.get(id=segunda_id),
-                            terca=Disciplina.objects.get(id=terca_id),
-                            quarta=Disciplina.objects.get(id=quarta_id),
-                            quinta=Disciplina.objects.get(id=quinta_id),
-                            sexta=Disciplina.objects.get(id=sexta_id),
-                            turma=turma
-                        )
-                        agenda.save()
-                    else:
-                        return render(request, 'agenda/nova_agenda.html', {
-                            'horarios': horarios_choices,
-                            'disciplinas': disciplinas,
-                            'dias': dias,
-                            'linhas': linhas,
-                            'turmas': turmas,
-                            'error': 'Preencha todas as disciplinas para cada horário.'
-                        })
-            return redirect('agenda-list')
+                    print('M:'+ segunda_id)
+                    print('T' + terca_id)
+                    print('W:'+ quarta_id)
+                    print('T:'+ segunda_id)
+                    print('F:'+ quinta_id)
+                    
+                    segunda= Disciplina.objects.get(id = segunda_id)
+                    terca= Disciplina.objects.get(id = terca_id)
+                    quarta= Disciplina.objects.get(id = quarta_id)
+                    quinta= Disciplina.objects.get(id = quinta_id)
+                    sexta= Disciplina.objects.get(id = sexta_id)
+                    save_grade("Segunda-feira", horario, segunda, turma)
+                    save_grade("Terça-feira", horario, terca, turma)
+                    save_grade("Quarta-feira", horario, quarta, turma)
+                    save_grade("Quinta-feira", horario, quinta, turma)
+                    save_grade("Sexta-feira", horario, sexta, turma)
+
+            return redirect('agenda')
         else:
             return render(request, 'agenda/nova_agenda.html', {
-                'horarios': horarios_choices,
+                'horarios': horarios,
                 'disciplinas': disciplinas,
                 'dias': dias,
                 'linhas': linhas,
@@ -403,7 +403,7 @@ def nova_agenda(request):
             })
 
     context = {
-        'horarios': horarios_choices,
+        'horarios': horarios,
         'disciplinas': disciplinas,
         'dias': dias,
         'linhas': linhas,
@@ -411,6 +411,15 @@ def nova_agenda(request):
     }
 
     return render(request, 'agenda/nova_agenda.html', context)
+
+def save_grade(dia_semana, hora_aula, disciplina,  turma):
+    grade = Grade(
+        dia_semana = dia_semana,
+        hora_aula = hora_aula,
+        disciplina = disciplina,
+        turma = turma
+    )
+    grade.save()
 
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
