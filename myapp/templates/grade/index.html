@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 
 {% block conteudo %}
+
+{% if not user.is_superuser and not grade %}
+    <div  class="alert alert-danger" role="alert" > <h1><p class="text-center "> {{user.username}} não tem permissão para visualizar turma {{turma}}</p></h1></div>
+{% elif not grade%}
+    <a class="btn btn-success my-3 mt-3" href="{% url 'nova_agenda' %}">Nova agenda</a>
+    <div  class="alert alert-primary" role="alert" > <h1><p class="text-center "> Agenda da turma {{turma}} não encontrada. Cadastre uma nova agenda</p></h1></div>
+{% else  %}
     <div class="container mt-5">
 
-        {% if grade %}
         <h1><p class="text-center ">Agenda da turma {{turma}}</p></h1>
         <table class="table table-bordered table-striped mt-5">
             <tr>
@@ -27,8 +33,7 @@
             {% endfor %}
         </table>
     </div>
-{% else %}
-    <div  class="alert alert-danger" role="alert" > <h1><p class="text-center "> {{user.username}} não tem permissão para visualizar turma {{turma}}</p></h1></div>
+
 {% endif %}
         
 {% endblock %}

@@ -6,6 +6,3 @@ class Hora_aula(models.Model):
     horario_final = models.TimeField()
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.horario_inicial} - {self.horario_final}"

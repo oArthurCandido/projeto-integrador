@@ -10,7 +10,7 @@
         {% csrf_token %}
         <div class="mb-3">
             <label for="turma" class="form-label">Selecione a turma:</label>
-            <select id="turma" name="turma" class="form-control">
+            <select id="turma" name="turma" class="form-control" required>
                 <option value="">Selecione a turma</option>
                 {% for turma in turmas %}
                     <option value="{{ turma.id }}">{{ turma.ano }} - {{ turma.nome }}</option>
@@ -32,16 +32,16 @@
                 {% for _ in linhas %}
                     <tr>
                         <td>
-                            <select name="horario_{{ forloop.counter }}" class="form-control">
+                            <select name="horario_{{ forloop.counter }}" class="form-control" required>
                                 <option value="">Horário</option>
-                                {% for horario_id, horario_label in horarios %}
-                                    <option value="{{ horario_id }}">{{ horario_label }}</option>
+                                {% for horario in horarios %}
+                                    <option value="{{ horario.id }}">{{ horario.horario_inicial }} - {{ horario.horario_final }}</option>
                                 {% endfor %}
                             </select>
                         </td>
                         {% for dia in dias %}
                             <td>
-                                <select name="disciplina_{{ dia }}_{{ forloop.counter }}" class="form-control">
+                                <select name="disciplina_{{ dia }}_{{ forloop.parentloop.counter }}" class="form-control" required>
                                     <option value="">Disciplina</option>
                                     {% for disciplina in disciplinas %}
                                         <option value="{{ disciplina.id }}">{{ disciplina.disciplina }}</option>
