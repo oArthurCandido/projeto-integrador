@@ -121,7 +121,10 @@ def turmas_grade(request, ano, nome):
     with connection.cursor() as cursor:
         cursor.execute(raw_user_query)
 
+    valid_user = False
+
     if cursor.rowcount > 0 :
+        valid_user = True
         raw_query = f"""
             SELECT
                 CONCAT(
@@ -183,7 +186,7 @@ def turmas_grade(request, ano, nome):
 
     turma = turma_ano + "°" + turma_nome
     print(turma)
-    return render(request, 'grade/index.html', {"grade": grade_list, "turma": turma})
+    return render(request, 'grade/index.html', {"valid_user": valid_user, "grade": grade_list, "turma": turma})
 
 @login_required(login_url='/login')
 @user_passes_test(lambda u: u.is_superuser)
